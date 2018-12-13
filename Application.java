@@ -60,37 +60,23 @@ public class Application {
 	
 	// to add cards to rolodex alphabetically
 	private static void addCard(Scanner input, List<Card> rolodex) {
-		String first = "";
-		//boolean isValid = false;
-		//while (isValid == false) {
-			System.out.print("First Name: ");
-			//try {
-				first = input.next();
-				//isValid = true;
-			//} catch(Exception e) {
-				//System.out.print("Sorry! Please provide a name.");
-			//}
-		//}
-		//System.out.print("First Name: ");
-		//String first = input.next();
-		first = first.substring(0, 1).toUpperCase() + first.substring(1).toLowerCase();
+		Card card = new Card();
+		System.out.print("\nFirst Name: ");
+		card.setFirstName(input.next());
 		System.out.print("Last Name: ");
-		String last = input.next();
-		last = last.substring(0, 1).toUpperCase() + last.substring(1).toLowerCase();
+		card.setLastName(input.next());
 		System.out.print("Telephone: ");
-		String tel = input.next();
-		tel = tel.replaceFirst("(\\d{3})(\\d{3})(\\d{4})", "($1) $2-$3");
-		//String street = input.next(tel);
+		card.setTelephone(input.next());
+		Address address = new Address();
 		System.out.print("Street: ");
-		String street = input.next();// why is this not working, next() or nextLine()?
+		address.setStreet(input.next());
 		System.out.print("City: ");
-		String city = input.nextLine();
+		address.setCity(input.next());
 		System.out.print("State: ");
-		String state = input.nextLine();
-		System.out.print("Zip: ");
-		String zip = input.nextLine();
-		Address address = new Address(street, city, state, zip);
-		Card card = new Card(first, last, tel, address);
+		address.setState(input.next());
+		System.out.print("ZIP: ");
+		address.setZip(input.next());
+		card.setAddress(address);
 		rolodex.add(card);
 		Collections.sort(rolodex);
 		Card.displayAll(rolodex);
@@ -103,8 +89,11 @@ public class Application {
 			return;
 		System.out.println("\nWhose contact information would you like to remove?\n"
 				+ "(Enter the first name.)\n");
+		
+		
+		
 		String deleteThis;
-		do{
+		do {
 			System.out.print("Your Selection: ");
 			deleteThis = input.next();
 		} while(deleteThis.equals(null));
@@ -114,48 +103,52 @@ public class Application {
 				toRemove.add(card);
 			}
 		}
-		//if(deleteThis.equals(null))
-		//	System.out.println("A name must be provided.");
+
 		rolodex.removeAll(toRemove);
 		Card.displayAll(rolodex);
 	}
 	
 	// to update card/address if user chooses to do so
 	private static void update(Scanner input, List<Card> rolodex) {
-		Card.displayAll(rolodex);
-		if (rolodex.isEmpty())
+		if (rolodex.isEmpty()) {
+			System.out.println("\nYou have to have contacts before you can update them.\n");
 			return;
-		System.out.println("\nWhose contact information would you like to update?\n"
-				+ "(Enter the first name.)\n");
+		}
+		System.out.println("\nEnter the telephone number of the person whose information\n"
+				+ "you would like to update.\n");
 		System.out.print("Your Selection: ");
-		String updateThis = input.next();
+		String updateThis = Card.formatTelephone(input.next());
+		boolean matches = false;
 		for (Card card : rolodex) {
-			if(card.getFirstName().equalsIgnoreCase(updateThis)) {
+			if(updateThis.equalsIgnoreCase(card.getTelephone())) {
+				matches = true;
 				int choice = 0;
 				System.out.println("\nWhat would you like to update?\n"
 						+ "1. First Name\n"
 						+ "2. Last Name\n"
 						+ "3. Address\n"
 						+ "4. Telephone\n");
-				System.out.print("Your Selection : ");
+				System.out.print("Your Selection: ");
 				choice = input.nextInt();
 				switch(choice) {
 					case 1: prompt(); card.setFirstName(input.next());
 					break;
 					case 2: prompt(); card.setLastName(input.next());
 					break;
-					case 3: card.address.updateAddress(input, rolodex);
+					case 3: card.getAddress().updateAddress(input, rolodex);
 					break;
 					case 4: prompt(); card.setTelephone(input.next());
 					break;
-					default: System.out.println("Invalid!");
+					default: System.out.println("Invalid choice.\n");
 					break;
 				}					
 			}
 		}
+		if (matches == false)
+			System.out.println("\nNo matches found!");
 	}
 	
-	// to prevent repetition above in Application.update()
+	// to avoid repetition above in Application.update()
 	private static void prompt() {
 		System.out.print("Enter new: ");
 	}
@@ -171,9 +164,10 @@ public class Application {
 
 		System.out.print("Your Selection: ");
 		String searchThis = input.next();
+		System.out.println();
 		for (Card card : rolodex) {
 			if (card.getFirstName().equalsIgnoreCase(searchThis)) {
-				System.out.print(card.toString());
+				System.out.println(card.toString());
 			}
 		}
 	}

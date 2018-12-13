@@ -5,15 +5,7 @@ import java.util.Scanner;
 
 public class Address {
 	private String street, city, state, zip;
-	
-	Address() {}
-	
-	Address(String str, String c, String sta, String zip){
-		this.street = str;
-		this.city = c;
-		this.state = sta;
-		this.zip = zip;
-	}
+
 	
 	public void setStreet(String str) {
 		this.street = str;
@@ -39,13 +31,12 @@ public class Address {
 	// Used in Application.update() to update address.
 	public void updateAddress(Scanner input, List<Card> rolodex) {
 		System.out.print("Street: ");
-		this.street = input.next();
+		setStreet(input.next());
 		System.out.print("City: ");
-		this.city = input.next();
+		this.setCity(input.next());
 		System.out.print("State: ");
-		this.state = input.next();
+		this.setState(input.next());
 		System.out.print("Zip: ");
-		this.zip = input.next();
-		//Application.displayMenu(input, rolodex);
+		this.setZip(input.next());
 	}
 }
